@@ -1,70 +1,37 @@
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Select,
-  VStack,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { quantumDefects } from "./quantumDefects";
+import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import InputForm from "./components/InputForm";
 
 function App() {
-  const [n, setN] = useState(6);
-  const [orbit, setOrbit] = useState();
+  const [n1, setN1] = useState();
+  const [n2, setN2] = useState();
+  const [qd1, setQd1] = useState();
+  const [qd2, setQd2] = useState();
 
-  console.log(quantumDefects["ns1/2"]);
+  useEffect(() => {
+    console.log(qd1, qd2);
+  }, [qd1, qd2]);
+
   return (
-    <Box>
-      <Card p="8">
-        <CardHeader>
+    <Box bgColor="gray.200">
+      <HStack p="8" spacing="4">
+        <VStack spacing="4" alignItems="start">
           <Heading size="lg">始状態</Heading>
-        </CardHeader>
-        <CardBody>
-          <VStack spacing={"4"} w="full" alignItems={"start"}>
-            <FormControl>
-              <FormLabel>主量子数</FormLabel>
-              <NumberInput onChange={(e) => setN(e)} defaultValue={6} min={1} max={100}>
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>軌道</FormLabel>
-              <Select onChange={(e) => setOrbit(e.target.value)}>
-                <option value="ns1/2">s1/2</option>
-                <option value="np1/2">p1/2</option>
-                <option value="np3/2">p3/2</option>
-                <option value="nd3/2">d3/2</option>
-                <option value="nd5/2">d5/2</option>
-              </Select>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>δ0</FormLabel>
-              <Input defaultValue={orbit && quantumDefects[orbit][0]}></Input>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>δ2</FormLabel>
-              <Input defaultValue={orbit && quantumDefects[orbit][1]}></Input>
-            </FormControl>
-          </VStack>
-        </CardBody>
-      </Card>
+          <InputForm
+            n={n1}
+            handleN={(val) => setN1(Number(val))}
+            handleQD={(val) => setQd1(val)}
+          />
+        </VStack>
+        <VStack spacing="4" alignItems="start">
+          <Heading size="lg">終状態</Heading>
+          <InputForm
+            n={n2}
+            handleN={(val) => setN2(Number(val))}
+            handleQD={(val) => setQd2(val)}
+          />
+        </VStack>
+      </HStack>
     </Box>
   );
 }
