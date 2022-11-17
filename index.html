@@ -6,79 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      .flex {
-        display: flex;
-      }
       .hstack {
         display: flex;
         flex-direction: column;
+        padding: 20px;
+      }
+      .submit {
+        width: 200px;
+        margin: 20px;
+      }
+      .results {
         margin: 20px;
       }
     </style>
   </head>
   <body>
-    <img width="600" src="img/quantum_defects.png" alt="" />
+    <h2>Rb Rydberg enhance</h2>
+    <img width="400" src="img/quantum_defects.png" alt="" />
     <form class="form" action="">
-      <div class="flex">
-        <div class="hstack">
-          <label
-            >始状態の主量子数n
-            <input type="number" name="start_n" min="1" max="100" />
-          </label>
-          <label
-            >始状態の量子欠損δ０
-            <input type="number" name="start_defect0" step="0.00000001" />
-          </label>
-          <label
-            >始状態の量子欠損δ２
-            <input type="number" name="start_defect2" step="0.00000001" />
-          </label>
-        </div>
-        <div class="hstack">
-          <label
-            >終状態の主量子数n'
-            <input type="number" name="end_n" min="1" max="100" />
-          </label>
-          <label
-            >終状態の量子欠損δ０
-            <input type="number" name="end_defect0" step="0.00000001" />
-          </label>
-          <label
-            >終状態の量子欠損δ２
-            <input type="number" name="end_defect2" step="0.00000001" />
-          </label>
-        </div>
+      <div class="hstack">
+        <label
+          >主量子数n
+          <input type="number" name="n" min="6" max="100" />
+        </label>
+        <label
+          >系列
+          <select name="series">
+            <option value="ns1/2">ns1/2</option>
+            <option value="np1/2">np1/2</option>
+            <option value="np3/2">np3/2</option>
+            <option value="nd3/2">nd3/2</option>
+            <option value="nd5/2">nd5/2</option>
+          </select>
+        </label>
+        <button type="button" class="submit">計算</button>
       </div>
-      <button type="button" class="submit">計算</button>
     </form>
-    <div>波数: <span class="result1"></span>[cm^-1]</div>
-    <div>波長: <span class="result2"></span>[nm]</div>
+    <div class="results">
+      <div>波数: <span class="result1"></span>[cm^-1]</div>
+      <div>励起レーザーの波長: <span class="result2"></span>[nm]</div>
+    </div>
+
     <script>
       const R = 109736.605; //[cm^-1]
+      const quantumDefects = {
+        "ns1/2": [3.1311804, 0.1784],
+        "np1/2": [2.6548849, 0.29],
+        "np3/2": [2.6416737, 0.295],
+        "nd3/2": [1.34809171, -0.60286],
+        "nd5/2": [1.34646572, -0.596],
+      };
+      const wave_number_limit = 33690.81;
+      const wave_number_6p = 23792.591;
+
       const form = document.forms[0];
       const submitButton = document.querySelector(".submit");
       const result1 = document.querySelector(".result1");
       const result2 = document.querySelector(".result2");
 
       submitButton.addEventListener("click", () => {
-        const start_n = form.elements["start_n"].value;
-        const end_n = form.elements["end_n"].value;
-        const start_defect0 = Number(form.elements["start_defect0"].value);
-        const start_defect2 = Number(form.elements["start_defect2"].value);
-        const end_defect0 = Number(form.elements["end_defect0"].value);
-        const end_defect2 = Number(form.elements["end_defect2"].value);
+        const n = form.elements["n"].value;
+        const series = form.elements["series"].value;
+        const qd = quantumDefects[series];
 
-        const start_defect =
-          start_defect0 + start_defect2 / (start_n - start_defect0) ** 2;
-        console.log({ start_defect });
-        const end_defect =
-          end_defect0 + end_defect2 / (end_n - end_defect0) ** 2;
-        console.log({ end_defect });
+        const quantum_defect = qd[0] + qd[1] / (n - qd[0]) ** 2;
+        console.log({ quantum_defect });
 
-        const frequency =
-          R * ((start_n - start_defect) ** -2 - (end_n - end_defect) ** -2);
-        result1.textContent = frequency;
-        const wave_length = 10 ** 7 / frequency;
+        const wave_number = wave_number_limit - R * (n - quantum_defect) ** -2;
+        result1.textContent = wave_number;
+        console.log({ wave_number });
+
+        const wave_length = 10 ** 7 / (wave_number - wave_number_6p);
         result2.textContent = wave_length;
       });
     </script>
