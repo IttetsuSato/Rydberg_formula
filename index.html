@@ -27,7 +27,7 @@
         >NIST ASD Levels</a
       >より
     </h2>
-    <table style="margin: 20px">
+    <table style="margin: 20px" border="1">
       <tr style="font-weight: bold">
         <td>Configuration</td>
         <td>Level(/cm)</td>
@@ -54,6 +54,7 @@
         <td>0.01</td>
       </tr>
     </table>
+
     <form class="form" action="">
       <div class="hstack">
         <h3>Configuration</h3>
@@ -74,9 +75,10 @@
         <button type="button" class="submit">計算</button>
       </div>
     </form>
+
     <div class="results">
       <h3>Results</h3>
-      <table>
+      <table border="1">
         <tr>
           <td>実効主量子数</td>
           <td><span class="effective_n"></span></td>
@@ -132,15 +134,14 @@
         console.log({ quantum_defect });
 
         const effective_n = n - quantum_defect;
-        effectiveN.textContent = effective_n;
-
-        const wave_number = wave_number_limit - R * (effective_n) ** -2;
-        result1.textContent = wave_number;
-        console.log({ wave_number });
-
+        
+        const wave_number = wave_number_limit - R * (effective_n) ** -2; 
         const wave_number_delta = wave_number - wave_number_6p;
         const wave_length = 10 ** 7 / wave_number_delta;
         const THz = (wave_number_delta * c) / 10 ** 10;
+
+        effectiveN.textContent = effective_n;
+        result1.textContent = wave_number;
         delta.textContent = wave_number_delta;
         result2.textContent = wave_length;
         result3.textContent = THz;
