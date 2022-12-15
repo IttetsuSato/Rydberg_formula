@@ -21,16 +21,48 @@
     </style>
   </head>
   <body>
-    <h2>Rb Rydberg enhance</h2>
-    <img width="400" src="img/quantum_defects.png" alt="" />
+    <h2>
+      <a
+        href="https://physics.nist.gov/cgi-bin/ASD/energy1.pl?de=0&spectrum=Rb+I&submit=Retrieve+Data&units=0&format=0&output=0&page_size=15&multiplet_ordered=0&conf_out=on&term_out=on&level_out=on&unc_out=1&j_out=on&lande_out=on&perc_out=on&biblio=on&temp="
+        >NIST ASD Levels</a
+      >より
+    </h2>
+    <table style="margin: 20px">
+      <tr style="font-weight: bold">
+        <td>Configuration</td>
+        <td>Level(/cm)</td>
+        <td>Uncertainty(/cm)</td>
+      </tr>
+      <tr>
+        <td>5S1/2</td>
+        <td>0.000</td>
+        <td>0.010</td>
+      </tr>
+      <tr>
+        <td>6P3/2</td>
+        <td>23792.591</td>
+        <td>0.010</td>
+      </tr>
+      <tr>
+        <td>n X</td>
+        <td>?????</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Limit</td>
+        <td>33690.81</td>
+        <td>0.01</td>
+      </tr>
+    </table>
     <form class="form" action="">
       <div class="hstack">
+        <h3>Configuration</h3>
         <label
           >主量子数n
           <input type="number" name="n" min="6" max="100" />
         </label>
         <label
-          >系列
+          >系列X
           <select name="series">
             <option value="ns1/2">ns1/2</option>
             <option value="np1/2">np1/2</option>
@@ -43,12 +75,32 @@
       </div>
     </form>
     <div class="results">
-      <div>波数: <span class="result1"></span>[cm^-1]</div>
-      <div>励起レーザーの波長: <span class="result2"></span>[nm]</div>
+      <h3>Results</h3>
+      <table>
+        <tr>
+          <td>Level</td>
+          <td><span class="result1"></span>[cm^-1]</td>
+        </tr>
+        <tr>
+          <td>Level - 6P3/2のLevel</td>
+          <td><span class="delta"></span>[cm^-1]</td>
+        </tr>
+        <tr>
+          <td>励起レーザーの波長</td>
+          <td><span class="result2"></span>[nm]</td>
+        </tr>
+        <tr>
+          <td>励起レーザーの周波数</td>
+          <td><span class="result3"></span>[THz]</td>
+        </tr>
+      </table>
     </div>
+    <img width="400" src="img/F.png" alt="" />
+    <img width="400" src="img/quantum_defects.png" alt="" />
 
     <script>
       const R = 109736.605; //[cm^-1]
+      const c = 299792458; //[m/s]
       const quantumDefects = {
         "ns1/2": [3.1311804, 0.1784],
         "np1/2": [2.6548849, 0.29],
@@ -63,6 +115,8 @@
       const submitButton = document.querySelector(".submit");
       const result1 = document.querySelector(".result1");
       const result2 = document.querySelector(".result2");
+      const result3 = document.querySelector(".result3");
+      const delta = document.querySelector(".delta");
 
       submitButton.addEventListener("click", () => {
         const n = form.elements["n"].value;
@@ -76,8 +130,12 @@
         result1.textContent = wave_number;
         console.log({ wave_number });
 
-        const wave_length = 10 ** 7 / (wave_number - wave_number_6p);
+        const wave_number_delta = wave_number - wave_number_6p;
+        const wave_length = 10 ** 7 / wave_number_delta;
+        const THz = (wave_number_delta * c) / 10 ** 10;
+        delta.textContent = wave_number_delta;
         result2.textContent = wave_length;
+        result3.textContent = THz;
       });
     </script>
   </body>
